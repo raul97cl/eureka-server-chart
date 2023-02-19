@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "eureka-server-chart.fullname" . }}
+  labels:
+    {{- include "eureka-server-chart.labels" . | nindent 4 }}
+spec:
+  serviceName: eureka-server
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "eureka-server-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "eureka-server-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP

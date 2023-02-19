@@ -1,0 +1,32 @@
+# Default values for cosmere-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: mazigros/eureka-server
+  pullPolicy: Always
+  tag: "latest"
+
+nameOverride: "eureka-server"
+fullnameOverride: "eureka-server"
+
+app:
+  port: 8761
+
+service:
+  name: eureka-server
+  type: ClusterIP
+  port: 8761
+
+ingress:
+  enabled: true
+  name: eureka-server
+  className: "nginx"
+  annotations: { nginx.ingress.kubernetes.io/rewrite-target: / }
+  hosts:
+    - host: eureka-server.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
